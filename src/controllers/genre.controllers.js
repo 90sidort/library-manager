@@ -4,10 +4,15 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getGenres = async (req, res, next) => {
+  let query = {};
   try {
-    const genres = await Genre.find();
+    if (req.query.gid) query = { _id: req.query.gid };
+    else if (req.query.name)
+      query = { name: { $regex: `${req.query.name}`, $options: 'i' } };
+    const genres = await Genre.find(query);
     return res.status(200).json({ genres });
   } catch (err) {
+    console.log(err);
     return next(new HttpError('Server error.', 500));
   }
 };
@@ -34,13 +39,31 @@ const updateGenre = async (req, res, next) => {
     return next(new HttpError(errorMessage, 422));
   }
   try {
-    const genre = await Genre.findById(req.params.id);
-  } catch (err) {}
+    const genre = await Genre.findById(req.params.gid);
+    if (!genre) return next(new HttpError('Genre not found!', 422));
+    const { name } = await req.body;
+    genre.name = name;
+    await genre.save();
+    return res.status(200).json({ genre });
+  } catch (err) {
+    return next(new HttpError('Server error!', 500));
+  }
 };
 
-const deleteGenre = async (req, res, next) => {};
+const deleteGenre = async (req, res, next) => {
+  try {
+    const genre = await Genre.findById(req.params.gid);
+    if (!genre) return next(new HttpError('Genre not found!', 422));
+    await genre.remove();
+    return res.status(200).json({ genre });
+  } catch (err) {
+    return next(new HttpError('Server error!', 500));
+  }
+};
 
 module.exports = {
   getGenres,
   createGenre,
+  updateGenre,
+  deleteGenre,
 };
