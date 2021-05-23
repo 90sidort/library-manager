@@ -3,9 +3,14 @@ const {
   getUsers,
   signup,
   login,
-  deleteCountry,
+  updateUser,
+  deleteUser,
+  archiveUser,
 } = require('../controllers/user.controllers');
-const { validateUser } = require('../validators/user.validator');
+const {
+  validateUser,
+  validateUserUpdate,
+} = require('../validators/user.validator');
 
 const userRouter = express.Router();
 
@@ -15,8 +20,10 @@ userRouter.post('/', validateUser, signup);
 
 userRouter.post('/login', login);
 
-// countryRouter.put('/:cid', validateUser, updateCountry);
+userRouter.put('/:uid', validateUserUpdate, updateUser);
 
-// countryRouter.delete('/:cid', deleteCountry);
+userRouter.patch('/:uid', archiveUser);
+
+userRouter.delete('/:uid', deleteUser);
 
 module.exports = userRouter;
