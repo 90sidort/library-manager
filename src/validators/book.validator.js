@@ -42,4 +42,4 @@ const validateBook = [
     .withMessage('Description cannot be longer than 1500 chars.'),
 ];
 
-module.exports = { validateBook };
+module.exports = validateBook;

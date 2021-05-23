@@ -38,7 +38,10 @@ const getBooks = async (req, res, next) => {
     if (publisher) query.publisher = { publisher };
     if (available) query.available = { available };
     if (author) query.author = { author };
-    const books = await Book.find(query);
+    const books = await Book.find(query)
+      .populate('authors', 'name surname')
+      .populate('genre', 'name')
+      .exec();
     return res.status(200).json({ books });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
