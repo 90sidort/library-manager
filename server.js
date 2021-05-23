@@ -7,6 +7,7 @@ const genresRouter = require('./src/routes/genre.routes');
 const errorController = require('./src/controllers/error.controllers');
 const countryRouter = require('./src/routes/country.routes');
 const userRouter = require('./src/routes/user.routes');
+const authorRouter = require('./src/routes/author.routes');
 
 const mongoURI = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false`;
 const port = process.env.PORT;
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use('/api/genres', genresRouter);
 app.use('/api/countries', countryRouter);
 app.use('/api/users', userRouter);
+app.use('/api/authors', authorRouter);
 app.use(errorController);
 app.use((error, req, res, next) => {
   if (res.headerSent) {
