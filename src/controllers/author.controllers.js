@@ -46,8 +46,7 @@ const updateAuthor = async (req, res, next) => {
     return next(new HttpError(errorMessage, 422));
   }
   try {
-    const { name, surname, country, description, booksAdd, booksDelete } =
-      await req.body;
+    const { name, surname, country, description } = await req.body;
     const author = await Author.findById(req.params.aid);
     if (!author) {
       return next(new HttpError('Author does not exists.', 403));
@@ -56,18 +55,6 @@ const updateAuthor = async (req, res, next) => {
     author.surname = surname || author.surname;
     author.country = country || author.country;
     author.description = description || author.description;
-    if (booksAdd) {
-      booksAdd.forEach(async (book) => {
-        await author.books.push(book);
-      });
-    }
-    if (booksDelete) {
-      let index;
-      booksDelete.forEach(async (book) => {
-        index = author.books.indexOf(book);
-        author.books.splice(index, 1);
-      });
-    }
     author.save();
     return res.status(200).json({ author });
   } catch (err) {

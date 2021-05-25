@@ -16,7 +16,6 @@ const authorModel = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Country',
     },
-    books: [{ type: mongoose.Schema.ObjectId, ref: 'Book' }],
     description: {
       type: String,
       required: false,

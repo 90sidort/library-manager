@@ -39,7 +39,7 @@ const updateCountry = async (req, res, next) => {
   }
   try {
     const country = await Country.findById(req.params.cid);
-    if (!country) return next(new HttpError('Genre not found!', 422));
+    if (!country) return next(new HttpError('Country not found!', 422));
     const { name } = await req.body;
     country.name = name;
     await country.save();
