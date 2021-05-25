@@ -1,5 +1,4 @@
 const { validationResult } = require('express-validator');
-const { findById } = require('../models/book.model');
 const Book = require('../models/book.model');
 const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');

@@ -16,7 +16,7 @@ const reviewModel = new mongoose.Schema(
     rating: {
       type: Number,
       required: true,
-      default: 6,
+      default: 3,
     },
     user: { type: mongoose.Schema.ObjectId, ref: 'User' },
     book: { type: mongoose.Schema.ObjectId, ref: 'Book' },
