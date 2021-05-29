@@ -9,9 +9,9 @@ const getAuthors = async (req, res, next) => {
   try {
     // eslint-disable-next-line no-underscore-dangle
     if (aid) query._id = aid;
-    else if (name) query.name = { $regex: `${name}`, $options: 'i' };
-    else if (surname) query.surname = { $regex: `${surname}`, $options: 'i' };
-    else if (country) query.country = { _id: country };
+    if (name) query.name = { $regex: `${name}`, $options: 'i' };
+    if (surname) query.surname = { $regex: `${surname}`, $options: 'i' };
+    if (country) query.country = { _id: country };
     const author = await Author.find(query).populate('country', 'name').exec();
     return res.status(200).json({ author });
   } catch (err) {

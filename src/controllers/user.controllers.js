@@ -11,11 +11,11 @@ const getUsers = async (req, res, next) => {
   try {
     // eslint-disable-next-line no-underscore-dangle
     if (req.query.uid) query._id = req.query.uid;
-    else if (req.query.name)
+    if (req.query.name)
       query.name = { $regex: `${req.query.name}`, $options: 'i' };
-    else if (req.query.surname)
+    if (req.query.surname)
       query.surname = { $regex: `${req.query.surname}`, $options: 'i' };
-    else if (req.query.email)
+    if (req.query.email)
       query.email = { $regex: `${req.query.email}`, $options: 'i' };
     const users = await User.find(query);
     return res.status(200).json({ users });

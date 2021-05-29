@@ -113,6 +113,7 @@ const updateBook = async (req, res, next) => {
     book.available = available || book.available;
     book.description = description || book.description;
     if (authorsDelete && authorsDelete.length > 0) {
+      let index;
       authorsDelete.forEach((author) => {
         index = book.authors.indexOf(author);
         book.authors.splice(index, 1);
@@ -124,6 +125,7 @@ const updateBook = async (req, res, next) => {
       });
     }
     if (genreDelete && genreDelete.length > 0) {
+      let index;
       genreDelete.forEach((genre) => {
         index = book.genre.indexOf(genre);
         book.genre.splice(index, 1);

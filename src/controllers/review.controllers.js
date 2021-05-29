@@ -5,15 +5,18 @@ const createErrorMessage = require('../utils/errorMessage');
 
 const getReview = async (req, res, next) => {
   try {
-    let searchQuery = {};
+    const searchQuery = {};
     const { user, book, id } = req.query;
     if (user) searchQuery.user = { _id: user };
     else if (book) searchQuery.book = { _id: book };
+    // eslint-disable-next-line no-underscore-dangle
     else if (id) searchQuery._id = id;
     const review = await Review.find(searchQuery);
     if (!review) return next(new HttpError('No reviews', 422));
     return res.status(201).json({ review });
-  } catch (err) {}
+  } catch (err) {
+    return next(new HttpError('Server error.', 500));
+  }
 };
 
 const createReview = async (req, res, next) => {
