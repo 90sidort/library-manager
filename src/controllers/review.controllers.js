@@ -11,7 +11,10 @@ const getReview = async (req, res, next) => {
     else if (book) searchQuery.book = { _id: book };
     // eslint-disable-next-line no-underscore-dangle
     else if (id) searchQuery._id = id;
-    const review = await Review.find(searchQuery);
+    const review = await Review.find(searchQuery)
+      .populate('book', 'title')
+      .populate('user', 'name surname')
+      .exec();
     if (!review) return next(new HttpError('No reviews', 422));
     return res.status(201).json({ review });
   } catch (err) {

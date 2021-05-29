@@ -38,7 +38,6 @@ const getBooks = async (req, res, next) => {
     if (publisher) query.publisher = { publisher };
     if (available) query.available = { available };
     if (author) query.authors = { _id: author };
-    console.log(query);
     const books = await Book.find(query)
       .populate('authors', 'name surname')
       .populate('genre', 'name')
