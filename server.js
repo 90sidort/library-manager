@@ -13,6 +13,7 @@ const reviewRouter = require('./src/routes/review.routes');
 const bookingRouter = require('./src/routes/borrowing.routes');
 
 const mongoURI = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017/${process.env.MONGO_DATABASE}?retryWrites=false&authSource=admin`;
+const atlasURI = `${process.env.ATLAS_URI}`;
 const port = process.env.PORT;
 
 const app = express();
@@ -35,7 +36,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(mongoURI, {
+  .connect(atlasURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: true,

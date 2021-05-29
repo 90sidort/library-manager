@@ -3,9 +3,10 @@ const { Seeder } = require('mongo-seeding');
 const path = require('path');
 
 const mongoURI = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017/${process.env.MONGO_DATABASE}?authSource=admin`;
+const atlasURI = `${process.env.ATLAS_URI}`;
 
 const configuration = {
-  database: mongoURI,
+  database: atlasURI,
   dropDatabase: true,
 };
 
