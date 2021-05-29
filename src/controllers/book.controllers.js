@@ -41,6 +41,7 @@ const getBooks = async (req, res, next) => {
     const books = await Book.find(query)
       .populate('authors', 'name surname')
       .populate('genre', 'name')
+      .populate('borrower', 'name surname')
       .exec();
     return res.status(200).json({ books });
   } catch (err) {

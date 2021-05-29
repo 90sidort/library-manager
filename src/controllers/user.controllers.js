@@ -17,7 +17,7 @@ const getUsers = async (req, res, next) => {
       query.surname = { $regex: `${req.query.surname}`, $options: 'i' };
     if (req.query.email)
       query.email = { $regex: `${req.query.email}`, $options: 'i' };
-    const users = await User.find(query);
+    const users = await User.find(query).populate('borrowed', 'title');
     return res.status(200).json({ users });
   } catch (err) {
     return next(new HttpError('Server error.', 500));

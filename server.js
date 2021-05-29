@@ -10,8 +10,9 @@ const userRouter = require('./src/routes/user.routes');
 const authorRouter = require('./src/routes/author.routes');
 const bookRouter = require('./src/routes/book.routes');
 const reviewRouter = require('./src/routes/review.routes');
+const bookingRouter = require('./src/routes/borrowing.routes');
 
-const mongoURI = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false`;
+const mongoURI = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017/${process.env.MONGO_DATABASE}?retryWrites=false&authSource=admin`;
 const port = process.env.PORT;
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/api/users', userRouter);
 app.use('/api/authors', authorRouter);
 app.use('/api/books', bookRouter);
 app.use('/api/reviews', reviewRouter);
+app.use('/api/borrows', bookingRouter);
 app.use(errorController);
 app.use((error, req, res, next) => {
   if (res.headerSent) {
@@ -36,6 +38,7 @@ mongoose
   .connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: true,
   })
   .then(() => {
     app.listen(port, () => {
