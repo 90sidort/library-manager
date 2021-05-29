@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext js server.js"
+    "dev": "nodemon --watch src --ext js server.js",
+    "seed": "node fixtures/seeder.js"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "mongo-seeding": "^3.6.0",
     "prettier": "^2.3.0"
   }
 }

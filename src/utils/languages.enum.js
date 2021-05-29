@@ -1,3 +1,3 @@
-const listOfLanguages = ['polish', 'english', 'french', 'spanish'];
+const listOfLanguages = ['polish', 'english', 'french', 'spanish', 'german'];
 
 module.exports = listOfLanguages;
