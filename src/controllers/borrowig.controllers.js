@@ -29,7 +29,16 @@ const borrowBook = async (req, res, next) => {
     await session.commitTransaction();
     return res.status(200).json({ book, user });
   } catch (err) {
-    console.log(err);
+    return next(new HttpError('Server error.', 500));
+  }
+};
+
+const getBorrowings = async (req, res, next) => {
+  const { bookId } = await req.params;
+  try {
+    const borrowing = await User.findOne({ 'borrowed.book': bookId });
+    return res.status(200).json({ borrowed: borrowing.borrowed });
+  } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
 };
@@ -61,4 +70,4 @@ const returnBook = async (req, res, next) => {
   }
 };
 
-module.exports = { borrowBook, returnBook };
+module.exports = { borrowBook, returnBook, getBorrowings };
