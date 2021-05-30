@@ -4,6 +4,7 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getReview = async (req, res, next) => {
+  const { page = 1, limit = 25 } = req.query;
   try {
     const searchQuery = {};
     const { user, book, id } = req.query;
@@ -12,11 +13,16 @@ const getReview = async (req, res, next) => {
     // eslint-disable-next-line no-underscore-dangle
     else if (id) searchQuery._id = id;
     const review = await Review.find(searchQuery)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
       .populate('book', 'title')
       .populate('user', 'name surname')
       .exec();
+    const count = await Review.countDocuments();
     if (!review) return next(new HttpError('No reviews', 422));
-    return res.status(201).json({ review });
+    return res
+      .status(200)
+      .json({ total: Math.ceil(count / limit), currentPage: page, review });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

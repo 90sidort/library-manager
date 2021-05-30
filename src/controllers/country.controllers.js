@@ -4,13 +4,19 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getCountries = async (req, res, next) => {
+  const { page = 1, limit = 25 } = req.query;
   let query = {};
   try {
     if (req.query.cid) query = { _id: req.query.cid };
     else if (req.query.name)
       query = { name: { $regex: `${req.query.name}`, $options: 'i' } };
-    const countries = await Country.find(query);
-    return res.status(200).json({ countries });
+    const countries = await Country.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    const count = await Country.countDocuments();
+    return res
+      .status(200)
+      .json({ total: Math.ceil(count / limit), currentPage: page, countries });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

@@ -7,6 +7,7 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getUsers = async (req, res, next) => {
+  const { page = 1, limit = 25 } = req.query;
   const query = {};
   try {
     // eslint-disable-next-line no-underscore-dangle
@@ -17,8 +18,14 @@ const getUsers = async (req, res, next) => {
       query.surname = { $regex: `${req.query.surname}`, $options: 'i' };
     if (req.query.email)
       query.email = { $regex: `${req.query.email}`, $options: 'i' };
-    const users = await User.find(query).populate('borrowed.book', 'title');
-    return res.status(200).json({ users });
+    const users = await User.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .populate('borrowed.book', 'title');
+    const count = await User.countDocuments();
+    return res
+      .status(200)
+      .json({ total: Math.ceil(count / limit), currentPage: page, users });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

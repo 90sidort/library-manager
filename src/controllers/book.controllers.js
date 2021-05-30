@@ -16,6 +16,8 @@ const getBooks = async (req, res, next) => {
     publisher,
     available,
     author,
+    page = 1,
+    limit = 25,
   } = req.query;
   let query = {};
   try {
@@ -39,11 +41,16 @@ const getBooks = async (req, res, next) => {
     if (available) query.available = { available };
     if (author) query.authors = { _id: author };
     const books = await Book.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
       .populate('authors', 'name surname')
       .populate('genre', 'name')
       .populate('borrower', 'name surname')
       .exec();
-    return res.status(200).json({ books });
+    const count = await Book.countDocuments();
+    return res
+      .status(200)
+      .json({ total: Math.ceil(count / limit), currentPage: page, books });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

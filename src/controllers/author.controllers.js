@@ -4,7 +4,7 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getAuthors = async (req, res, next) => {
-  const { aid, name, surname, country } = req.query;
+  const { aid, name, surname, country, page = 1, limit = 25 } = req.query;
   const query = {};
   try {
     // eslint-disable-next-line no-underscore-dangle
@@ -12,8 +12,15 @@ const getAuthors = async (req, res, next) => {
     if (name) query.name = { $regex: `${name}`, $options: 'i' };
     if (surname) query.surname = { $regex: `${surname}`, $options: 'i' };
     if (country) query.country = { _id: country };
-    const author = await Author.find(query).populate('country', 'name').exec();
-    return res.status(200).json({ author });
+    const author = await Author.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .populate('country', 'name')
+      .exec();
+    const count = await Author.countDocuments();
+    return res
+      .status(200)
+      .json({ total: Math.ceil(count / limit), currentPage: page, author });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

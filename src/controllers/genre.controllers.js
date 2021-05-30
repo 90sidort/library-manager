@@ -4,13 +4,19 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getGenres = async (req, res, next) => {
+  const { page = 1, limit = 25 } = req.query;
   let query = {};
   try {
     if (req.query.gid) query = { _id: req.query.gid };
     else if (req.query.name)
       query = { name: { $regex: `${req.query.name}`, $options: 'i' } };
-    const genres = await Genre.find(query);
-    return res.status(200).json({ genres });
+    const genres = await Genre.find(query)
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    const count = await Genre.countDocuments();
+    return res
+      .status(200)
+      .json({ total: Math.ceil(count / limit), currentPage: page, genres });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
