@@ -18,10 +18,13 @@ const borrowBook = async (req, res, next) => {
       );
     const session = await startSession();
     session.startTransaction();
+    const startDate = new Date();
+    const end = new Date();
+    const endDate = new Date(end.setDate(end.getDate() + 14));
     book.available = false;
     book.borrower = user._id;
     await book.save({ session });
-    user.borrowed.push(book._id);
+    user.borrowed.push({ book: book._id, start: startDate, end: endDate });
     await user.save({ session });
     await session.commitTransaction();
     return res.status(200).json({ book, user });
@@ -40,15 +43,13 @@ const returnBook = async (req, res, next) => {
     if (!user) return next(new HttpError('User not found', 404));
     if (book.borrower.toString() !== uid)
       return next(new HttpError('Book is not borrowed by user', 400));
-    if (!user.borrowed.includes(bid))
-      return next(new HttpError('User did not borrow this book!', 400));
     const session = await startSession();
     session.startTransaction();
     book.available = true;
     book.borrower = null;
     await book.save({ session });
     const newBorrows = await user.borrowed.filter(
-      (bookId) => bookId.toString() !== bid
+      (bookObj) => bookObj.book.toString() !== bid
     );
     user.borrowed = newBorrows;
     await user.save({ session });

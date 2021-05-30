@@ -16,7 +16,16 @@ const userModel = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     borrowed: {
-      type: [{ type: mongoose.Schema.ObjectId, ref: 'Book' }],
+      type: [
+        {
+          book: { type: mongoose.Schema.ObjectId, ref: 'Book' },
+          start: { type: Date, required: true },
+          end: {
+            type: Date,
+            required: true,
+          },
+        },
+      ],
       required: false,
       default: null,
     },
