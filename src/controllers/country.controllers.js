@@ -4,6 +4,7 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getCountries = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { page = 1, limit = 25 } = req.query;
   let query = {};
   try {
@@ -23,6 +24,7 @@ const getCountries = async (req, res, next) => {
 };
 
 const createCountry = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -38,6 +40,7 @@ const createCountry = async (req, res, next) => {
 };
 
 const updateCountry = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -56,6 +59,7 @@ const updateCountry = async (req, res, next) => {
 };
 
 const deleteCountry = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   try {
     const country = await Country.findById(req.params.cid);
     if (!country) return next(new HttpError('Genre not found!', 422));

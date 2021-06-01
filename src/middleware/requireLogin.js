@@ -18,7 +18,6 @@ const requireLogin = async (req, res, next) => {
     if (admin) req.query.admin = true;
     next();
   } catch (err) {
-    console.log(err);
     return next(new HttpError('Authentication failed!', 403));
   }
 };

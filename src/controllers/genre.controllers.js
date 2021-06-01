@@ -4,6 +4,7 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getGenres = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { page = 1, limit = 25 } = req.query;
   let query = {};
   try {
@@ -23,6 +24,7 @@ const getGenres = async (req, res, next) => {
 };
 
 const createGenre = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -38,6 +40,7 @@ const createGenre = async (req, res, next) => {
 };
 
 const updateGenre = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -56,6 +59,7 @@ const updateGenre = async (req, res, next) => {
 };
 
 const deleteGenre = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   try {
     const genre = await Genre.findById(req.params.gid);
     if (!genre) return next(new HttpError('Genre not found!', 422));

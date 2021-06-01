@@ -57,6 +57,7 @@ const getBooks = async (req, res, next) => {
 };
 
 const createBook = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -92,6 +93,7 @@ const createBook = async (req, res, next) => {
 };
 
 const updateBook = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -149,12 +151,12 @@ const updateBook = async (req, res, next) => {
     await book.save();
     return res.status(201).json({ book });
   } catch (err) {
-    console.log(err);
     return next(new HttpError('Server error!', 500));
   }
 };
 
 const deleteBoook = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   try {
     const book = await Book.findById(req.params.bid);
     if (!book) return next(new HttpError('Book not found!', 422));
@@ -165,7 +167,6 @@ const deleteBoook = async (req, res, next) => {
     await book.remove();
     return res.status(200).json({ book });
   } catch (err) {
-    console.log(err);
     return next(new HttpError('Server error!', 500));
   }
 };

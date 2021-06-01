@@ -4,6 +4,7 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getAuthors = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { aid, name, surname, country, page = 1, limit = 25 } = req.query;
   const query = {};
   try {
@@ -27,6 +28,7 @@ const getAuthors = async (req, res, next) => {
 };
 
 const createAuthor = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -47,6 +49,7 @@ const createAuthor = async (req, res, next) => {
 };
 
 const updateAuthor = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -70,6 +73,7 @@ const updateAuthor = async (req, res, next) => {
 };
 
 const deleteAuthor = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   try {
     const author = await Author.findById(req.params.aid);
     if (!author) return next(new HttpError('Author not found!', 422));

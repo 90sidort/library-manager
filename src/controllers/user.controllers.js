@@ -9,7 +9,7 @@ const Admin = require('../models/admin.model');
 
 const getUsers = async (req, res, next) => {
   if (!req.query.admin) {
-    if (req.query.userId !== req.query.uid)
+    if (req.query.userId !== req.params.uid)
       return next(new HttpError('Unauthorized.', 403));
   }
   const { page = 1, limit = 25 } = req.query;
@@ -90,14 +90,13 @@ const login = async (req, res, next) => {
       userName: existingUser.name,
     });
   } catch (err) {
-    console.log(err);
     return next(new HttpError('Login failed.', 500));
   }
 };
 
 const updateUser = async (req, res, next) => {
   if (!req.query.admin) {
-    if (req.query.userId !== req.query.uid)
+    if (req.query.userId !== req.params.uid)
       return next(new HttpError('Unauthorized.', 403));
   }
   const { errors } = validationResult(req);
@@ -189,7 +188,6 @@ const addAdmin = async (req, res, next) => {
   const { uid } = await req.params;
   try {
     const user = await User.findById(uid);
-    console.log(user);
     if (!user) return next(new HttpError('User does not exist!', 404));
     await new Admin({ admin: user._id }).save();
     return res.status(200).json({ done: true });

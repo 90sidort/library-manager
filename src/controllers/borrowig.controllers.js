@@ -5,6 +5,7 @@ const User = require('../models/user.model');
 const HttpError = require('../utils/error');
 
 const borrowBook = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { bid, uid } = await req.params;
   try {
     const book = await Book.findById(bid);
@@ -44,6 +45,7 @@ const getBorrowings = async (req, res, next) => {
 };
 
 const returnBook = async (req, res, next) => {
+  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { bid, uid } = await req.params;
   try {
     const book = await Book.findById(bid);
@@ -65,7 +67,6 @@ const returnBook = async (req, res, next) => {
     await session.commitTransaction();
     return res.status(200).json({ book, user });
   } catch (err) {
-    console.log(err);
     return next(new HttpError('Server error.', 500));
   }
 };
