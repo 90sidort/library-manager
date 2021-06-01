@@ -13,11 +13,10 @@ const {
   validateUserUpdate,
 } = require('../validators/user.validator');
 const requireLogin = require('../middleware/requireLogin');
-const requireAdmin = require('../middleware/isAdmin');
 
 const userRouter = express.Router();
 
-userRouter.get('/', requireAdmin, getUsers);
+userRouter.get('/', requireLogin, getUsers);
 
 userRouter.post('/', validateUser, signup);
 
@@ -25,10 +24,10 @@ userRouter.post('/login', login);
 
 userRouter.put('/:uid', requireLogin, validateUserUpdate, updateUser);
 
-userRouter.patch('/admin/:uid', requireAdmin, addAdmin);
+userRouter.patch('/admin/:uid', requireLogin, addAdmin);
 
-userRouter.patch('/:uid', requireAdmin, archiveUser);
+userRouter.patch('/:uid', requireLogin, archiveUser);
 
-userRouter.delete('/:uid', requireAdmin, deleteUser);
+userRouter.delete('/:uid', requireLogin, deleteUser);
 
 module.exports = userRouter;

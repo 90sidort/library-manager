@@ -8,6 +8,10 @@ const createErrorMessage = require('../utils/errorMessage');
 const Admin = require('../models/admin.model');
 
 const getUsers = async (req, res, next) => {
+  if (!req.query.admin) {
+    if (req.query.userId !== req.query.uid)
+      return next(new HttpError('Unauthorized.', 403));
+  }
   const { page = 1, limit = 25 } = req.query;
   const query = {};
   try {
@@ -92,8 +96,10 @@ const login = async (req, res, next) => {
 };
 
 const updateUser = async (req, res, next) => {
-  if (req.query.userId !== req.params.uid)
-    return next(new HttpError('Unauthorized.', 403));
+  if (!req.query.admin) {
+    if (req.query.userId !== req.query.uid)
+      return next(new HttpError('Unauthorized.', 403));
+  }
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -127,6 +133,9 @@ const updateUser = async (req, res, next) => {
 };
 
 const archiveUser = async (req, res, next) => {
+  if (!req.query.admin) {
+    return next(new HttpError('Unauthorized.', 403));
+  }
   const { archived } = await req.body;
   try {
     const user = await User.findById(req.params.uid);
@@ -153,6 +162,9 @@ const archiveUser = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
+  if (!req.query.admin) {
+    return next(new HttpError('Unauthorized.', 403));
+  }
   try {
     const user = await User.findById(req.params.uid);
     if (!user) return next(new HttpError('User not found!', 422));
@@ -171,6 +183,9 @@ const deleteUser = async (req, res, next) => {
 };
 
 const addAdmin = async (req, res, next) => {
+  if (!req.query.admin) {
+    return next(new HttpError('Unauthorized.', 403));
+  }
   const { uid } = await req.params;
   try {
     const user = await User.findById(uid);
