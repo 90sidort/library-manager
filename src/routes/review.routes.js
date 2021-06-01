@@ -6,15 +6,16 @@ const {
   deleteReview,
 } = require('../controllers/review.controllers');
 const validateReview = require('../validators/review.validator');
+const requireLogin = require('../middleware/requireLogin');
 
 const reviewRouter = express.Router();
 
-reviewRouter.get('/', getReview);
+reviewRouter.get('/', requireLogin, getReview);
 
-reviewRouter.post('/', validateReview, createReview);
+reviewRouter.post('/', requireLogin, validateReview, createReview);
 
-reviewRouter.put('/:rid', validateReview, updateReview);
+reviewRouter.put('/:rid', requireLogin, validateReview, updateReview);
 
-reviewRouter.delete('/:rid', deleteReview);
+reviewRouter.delete('/:rid', requireLogin, deleteReview);
 
 module.exports = reviewRouter;

@@ -5,16 +5,17 @@ const {
   updateAuthor,
   deleteAuthor,
 } = require('../controllers/author.controllers');
+const requireLogin = require('../middleware/requireLogin');
 const validateAuthor = require('../validators/author.validator');
 
 const authorRouter = express.Router();
 
-authorRouter.get('/', getAuthors);
+authorRouter.get('/', requireLogin, getAuthors);
 
-authorRouter.post('/', validateAuthor, createAuthor);
+authorRouter.post('/', requireLogin, validateAuthor, createAuthor);
 
-authorRouter.put('/:aid', validateAuthor, updateAuthor);
+authorRouter.put('/:aid', requireLogin, validateAuthor, updateAuthor);
 
-authorRouter.delete('/:aid', deleteAuthor);
+authorRouter.delete('/:aid', requireLogin, deleteAuthor);
 
 module.exports = authorRouter;

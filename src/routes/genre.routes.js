@@ -6,15 +6,16 @@ const {
   deleteGenre,
 } = require('../controllers/genre.controllers');
 const validateGenre = require('../validators/genre.validator');
+const requireLogin = require('../middleware/requireLogin');
 
 const genresRouter = express.Router();
 
-genresRouter.get('/', getGenres);
+genresRouter.get('/', requireLogin, getGenres);
 
-genresRouter.post('/', validateGenre, createGenre);
+genresRouter.post('/', requireLogin, validateGenre, createGenre);
 
-genresRouter.put('/:gid', validateGenre, updateGenre);
+genresRouter.put('/:gid', requireLogin, validateGenre, updateGenre);
 
-genresRouter.delete('/:gid', deleteGenre);
+genresRouter.delete('/:gid', requireLogin, deleteGenre);
 
 module.exports = genresRouter;

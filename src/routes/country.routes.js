@@ -6,15 +6,16 @@ const {
   deleteCountry,
 } = require('../controllers/country.controllers');
 const validateCountry = require('../validators/country.validator');
+const requireLogin = require('../middleware/requireLogin');
 
 const countryRouter = express.Router();
 
-countryRouter.get('/', getCountries);
+countryRouter.get('/', requireLogin, getCountries);
 
-countryRouter.post('/', validateCountry, createCountry);
+countryRouter.post('/', requireLogin, validateCountry, createCountry);
 
-countryRouter.put('/:cid', validateCountry, updateCountry);
+countryRouter.put('/:cid', requireLogin, validateCountry, updateCountry);
 
-countryRouter.delete('/:cid', deleteCountry);
+countryRouter.delete('/:cid', requireLogin, deleteCountry);
 
 module.exports = countryRouter;

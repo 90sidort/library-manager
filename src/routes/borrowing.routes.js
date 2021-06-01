@@ -4,13 +4,14 @@ const {
   returnBook,
   getBorrowings,
 } = require('../controllers/borrowig.controllers');
+const requireLogin = require('../middleware/requireLogin');
 
 const bookingRouter = express.Router();
 
-bookingRouter.patch('/:bid/:uid', borrowBook);
+bookingRouter.patch('/:bid/:uid', requireLogin, borrowBook);
 
-bookingRouter.patch('/return/:bid/:uid', returnBook);
+bookingRouter.patch('/return/:bid/:uid', requireLogin, returnBook);
 
-bookingRouter.get('/:bookId', getBorrowings);
+bookingRouter.get('/:bookId', requireLogin, getBorrowings);
 
 module.exports = bookingRouter;

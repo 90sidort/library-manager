@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
+const Admin = require('../models/admin.model');
 
 const getUsers = async (req, res, next) => {
   const { page = 1, limit = 25 } = req.query;
@@ -84,12 +85,15 @@ const login = async (req, res, next) => {
       token,
       userName: existingUser.name,
     });
-  } catch (e) {
+  } catch (err) {
+    console.log(err);
     return next(new HttpError('Login failed.', 500));
   }
 };
 
 const updateUser = async (req, res, next) => {
+  if (req.query.userId !== req.params.uid)
+    return next(new HttpError('Unauthorized.', 403));
   const { errors } = validationResult(req);
   if (errors.length > 0) {
     const errorMessage = await createErrorMessage(errors);
@@ -166,6 +170,19 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const addAdmin = async (req, res, next) => {
+  const { uid } = await req.params;
+  try {
+    const user = await User.findById(uid);
+    console.log(user);
+    if (!user) return next(new HttpError('User does not exist!', 404));
+    await new Admin({ admin: user._id }).save();
+    return res.status(200).json({ done: true });
+  } catch (err) {
+    return next(new HttpError('Server error!', 500));
+  }
+};
+
 module.exports = {
   getUsers,
   signup,
@@ -173,4 +190,5 @@ module.exports = {
   updateUser,
   deleteUser,
   archiveUser,
+  addAdmin,
 };

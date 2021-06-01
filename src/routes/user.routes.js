@@ -6,24 +6,29 @@ const {
   updateUser,
   deleteUser,
   archiveUser,
+  addAdmin,
 } = require('../controllers/user.controllers');
 const {
   validateUser,
   validateUserUpdate,
 } = require('../validators/user.validator');
+const requireLogin = require('../middleware/requireLogin');
+const requireAdmin = require('../middleware/isAdmin');
 
 const userRouter = express.Router();
 
-userRouter.get('/', getUsers);
+userRouter.get('/', requireAdmin, getUsers);
 
 userRouter.post('/', validateUser, signup);
 
 userRouter.post('/login', login);
 
-userRouter.put('/:uid', validateUserUpdate, updateUser);
+userRouter.put('/:uid', requireLogin, validateUserUpdate, updateUser);
 
-userRouter.patch('/:uid', archiveUser);
+userRouter.patch('/admin/:uid', requireAdmin, addAdmin);
 
-userRouter.delete('/:uid', deleteUser);
+userRouter.patch('/:uid', requireAdmin, archiveUser);
+
+userRouter.delete('/:uid', requireAdmin, deleteUser);
 
 module.exports = userRouter;
