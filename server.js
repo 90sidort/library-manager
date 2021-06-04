@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const genresRouter = require('./src/routes/genre.routes');
 const errorController = require('./src/controllers/error.controllers');
@@ -17,6 +18,9 @@ const atlasURI = `${process.env.ATLAS_URI}`;
 const port = process.env.PORT;
 
 const app = express();
+
+app.use(cors({ origin: true }));
+app.options('*', cors({ origin: true }));
 
 app.use(bodyParser.json());
 app.use('/api/genres', genresRouter);
