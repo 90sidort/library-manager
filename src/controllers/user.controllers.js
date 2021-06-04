@@ -78,8 +78,13 @@ const login = async (req, res, next) => {
       existingUser.password
     );
     if (!isValidPassword) return next(new HttpError('Incorrect password!'));
+    const admin = await Admin.findOne({ admin: existingUser._id });
     const token = jwt.sign(
-      { userId: existingUser.id, email: existingUser.email },
+      {
+        userId: existingUser.id,
+        email: existingUser.email,
+        admin: admin ? true : false,
+      },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -88,6 +93,7 @@ const login = async (req, res, next) => {
       email: existingUser.email,
       token,
       userName: existingUser.name,
+      admin: admin ? true : false,
     });
   } catch (err) {
     return next(new HttpError('Login failed.', 500));

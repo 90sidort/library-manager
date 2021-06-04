@@ -13,9 +13,7 @@ const requireLogin = async (req, res, next) => {
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.query.userId = decoded.userId;
-    req.query.admin = false;
-    const admin = await Admin.findOne({ admin: decoded.userId });
-    if (admin) req.query.admin = true;
+    req.query.admin = decoded.admin;
     next();
   } catch (err) {
     return next(new HttpError('Authentication failed!', 403));
