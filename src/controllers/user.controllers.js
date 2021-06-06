@@ -28,9 +28,7 @@ const getUsers = async (req, res, next) => {
       .skip((page - 1) * limit)
       .populate('borrowed.book', 'title');
     const count = await User.countDocuments();
-    return res
-      .status(200)
-      .json({ total: Math.ceil(count / limit), currentPage: page, users });
+    return res.status(200).json({ count, currentPage: page, users });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
