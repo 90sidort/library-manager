@@ -27,7 +27,7 @@ const getUsers = async (req, res, next) => {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate('borrowed.book', 'title');
-    const count = await User.countDocuments();
+    const count = await User.find(query).countDocuments();
     return res.status(200).json({ count, currentPage: page, users });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
@@ -84,7 +84,7 @@ const login = async (req, res, next) => {
         admin: admin ? true : false,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '12h' }
     );
     return res.status(200).json({
       userId: existingUser.id,
