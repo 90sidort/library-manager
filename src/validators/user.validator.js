@@ -67,7 +67,7 @@ const validateUserUpdate = [
     })
     .optional()
     .withMessage('Requires at least 6 chars and max 16 chars'),
-  body('newEmail')
+  body('email')
     .trim()
     .isEmail()
     .isLength({

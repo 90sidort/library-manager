@@ -109,17 +109,17 @@ const updateUser = async (req, res, next) => {
     return next(new HttpError(errorMessage, 422));
   }
   try {
-    const { name, surname, about, newEmail, newPassword } = await req.body;
+    const { name, surname, about, email, newPassword } = await req.body;
     const user = await User.findById(req.params.uid);
     if (!user) {
       return next(new HttpError('User does not exists.', 403));
     }
 
-    if (newEmail) {
-      const checkEmail = await User.findOne({ email: newEmail });
+    if (email !== user.email) {
+      const checkEmail = await User.findOne({ email: email });
       if (checkEmail)
-        return next(new HttpError('THis email is already taken.', 400));
-      user.email = newEmail;
+        return next(new HttpError('This email is already taken.', 400));
+      user.email = email;
     }
     if (newPassword) {
       const hashedPassword = await bcrypt.hash(newPassword, 12);
