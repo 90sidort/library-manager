@@ -110,7 +110,10 @@ const updateUser = async (req, res, next) => {
   }
   try {
     const { name, surname, about, email, newPassword } = await req.body;
-    const user = await User.findById(req.params.uid);
+    const user = await User.findById(req.params.uid).populate(
+      'borrowed.book',
+      'title'
+    );
     if (!user) {
       return next(new HttpError('User does not exists.', 403));
     }
