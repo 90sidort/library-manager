@@ -134,7 +134,7 @@ const updateUser = async (req, res, next) => {
     user.name = name || user.name;
     user.surname = surname || user.surname;
     user.about = about || user.about;
-    user.save();
+    await user.save();
     user.password = '';
     return res.status(200).json({ user });
   } catch (err) {
@@ -164,7 +164,7 @@ const archiveUser = async (req, res, next) => {
     } else {
       return next(new HttpError('Invalid action', 400));
     }
-    user.save();
+    await user.save();
     user.password = '';
     return res.status(200).json({ user });
   } catch (err) {
