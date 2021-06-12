@@ -26,7 +26,8 @@ const getUsers = async (req, res, next) => {
     const users = await User.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
-      .populate('borrowed.book', 'title');
+      .populate('borrowed.book', 'title')
+      .select('-password');
     const count = await User.find(query).countDocuments();
     return res.status(200).json({ count, currentPage: page, users });
   } catch (err) {
@@ -55,8 +56,10 @@ const signup = async (req, res, next) => {
       password: hashedPassword,
       about,
     }).save();
+    user.password = '';
     return res.status(201).json({ user });
   } catch (err) {
+    console.log(err);
     return next(new HttpError('Server error!', 500));
   }
 };
@@ -132,6 +135,7 @@ const updateUser = async (req, res, next) => {
     user.surname = surname || user.surname;
     user.about = about || user.about;
     user.save();
+    user.password = '';
     return res.status(200).json({ user });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
@@ -161,6 +165,7 @@ const archiveUser = async (req, res, next) => {
       return next(new HttpError('Invalid action', 400));
     }
     user.save();
+    user.password = '';
     return res.status(200).json({ user });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
@@ -182,6 +187,7 @@ const deleteUser = async (req, res, next) => {
         )
       );
     await user.remove();
+    user.password = '';
     return res.status(200).json({ user });
   } catch (err) {
     return next(new HttpError('Server error!', 500));
