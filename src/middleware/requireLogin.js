@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const HttpError = require('../utils/error');
-const Admin = require('../models/admin.model');
 
 const requireLogin = async (req, res, next) => {
   if (req.method === 'OPTIONS') {

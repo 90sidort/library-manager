@@ -9,7 +9,7 @@ const Admin = require('../models/admin.model');
 
 const getUsers = async (req, res, next) => {
   if (!req.query.admin) {
-    if (req.query.userId !== req.params.uid)
+    if (req.query.userId !== req.query.uid)
       return next(new HttpError('Unauthorized.', 403));
   }
   const { page = 1, limit = 25 } = req.query;
@@ -59,7 +59,6 @@ const signup = async (req, res, next) => {
     user.password = '';
     return res.status(201).json({ user });
   } catch (err) {
-    console.log(err);
     return next(new HttpError('Server error!', 500));
   }
 };
@@ -103,7 +102,7 @@ const login = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   if (!req.query.admin) {
-    if (req.query.userId !== req.params.uid)
+    if (req.query.userId !== req.query.uid)
       return next(new HttpError('Unauthorized.', 403));
   }
   const { errors } = validationResult(req);
