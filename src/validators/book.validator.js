@@ -1,4 +1,5 @@
 const { body } = require('express-validator');
+const listOfLanguages = require('./../utils/languages.enum');
 
 const validateBook = [
   body('title')
@@ -8,6 +9,17 @@ const validateBook = [
       max: 600,
     })
     .withMessage('Book title requires at least 2 chars and max 600 chars.'),
+  body('language')
+    .isIn(listOfLanguages)
+    .withMessage(
+      'Language has to be polish/ english/ french/ spanish or german.'
+    ),
+  body('genre')
+    .isArray({ min: 1, max: 3 })
+    .withMessage('Genres have to be provided (up to 3).'),
+  body('authors')
+    .isArray({ min: 1, max: 3 })
+    .withMessage('Authos have to be provided (up to 3).'),
   body('pages')
     .isInt({
       min: 1,

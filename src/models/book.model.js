@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const listOfLanguages = require('../utils/languages.enum');
 
 const bookModel = new mongoose.Schema(
   {
@@ -18,20 +17,11 @@ const bookModel = new mongoose.Schema(
     },
     genre: {
       type: [{ type: mongoose.Schema.ObjectId, ref: 'Genre' }],
-      validate: {
-        validator(arr) {
-          return arr.length < 4;
-        },
-        message: 'Cannot assing more than 3 genres',
-      },
+      required: true,
     },
     language: {
       type: String,
       required: true,
-      enum: {
-        values: listOfLanguages,
-        message: '{VALUE} is not a valid language.',
-      },
     },
     publisher: {
       type: String,
