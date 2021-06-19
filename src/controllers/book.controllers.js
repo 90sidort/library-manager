@@ -7,8 +7,8 @@ const getBooks = async (req, res, next) => {
   const {
     bid,
     title,
-    pagesMin,
-    pagesMax,
+    pageMin,
+    pageMax,
     publishedMin,
     publishedMax,
     genre,
@@ -23,9 +23,9 @@ const getBooks = async (req, res, next) => {
   try {
     if (bid) query = { _id: bid };
     if (title) query.title = { $regex: `${title}`, $options: 'i' };
-    if (pagesMin && pagesMax) query.pages = { $gt: pagesMin, $lt: pagesMax };
-    if (pagesMin && !pagesMax) query.pages = { $gt: pagesMin, $lt: 10000 };
-    if (!pagesMin && pagesMax) query.pages = { $gt: 1, $lt: pagesMax };
+    if (pageMin && pageMax) query.pages = { $gt: pageMin, $lt: pageMax };
+    if (pageMin && !pageMax) query.pages = { $gt: pageMin, $lt: 10000 };
+    if (!pageMin && pageMax) query.pages = { $gt: 1, $lt: pageMax };
     if (publishedMin && publishedMax)
       query.published = {
         $gt: publishedMin - 1,
