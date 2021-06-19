@@ -15,7 +15,7 @@ const getBooks = async (req, res, next) => {
     language,
     publisher,
     available,
-    author,
+    authors,
     page = 1,
     limit = 25,
   } = req.query;
@@ -35,11 +35,11 @@ const getBooks = async (req, res, next) => {
       query.published = { $gt: publishedMin - 1, $lt: 3000 };
     if (!publishedMin && publishedMax)
       query.published = { $gt: 1900, $lt: publishedMax };
-    if (genre) query.genre = { _id: genre };
+    if (genre && genre !== 'all') query.genre = { _id: genre };
     if (language) query.language = language;
     if (publisher) query.publisher = publisher;
     if (available) query.available = available;
-    if (author) query.authors = { _id: author };
+    if (authors && authors !== 'all') query.authors = { _id: authors };
     const books = await Book.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
