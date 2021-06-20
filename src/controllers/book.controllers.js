@@ -36,7 +36,7 @@ const getBooks = async (req, res, next) => {
     if (!publishedMin && publishedMax)
       query.published = { $gt: 1900, $lt: publishedMax };
     if (genre && genre !== 'all') query.genre = { _id: genre };
-    if (language) query.language = language;
+    if (language && language !== 'all') query.language = language;
     if (publisher) query.publisher = publisher;
     if (available) query.available = available;
     if (authors && authors !== 'all') query.authors = { _id: authors };
@@ -48,6 +48,7 @@ const getBooks = async (req, res, next) => {
       .populate('borrower', 'name surname')
       .exec();
     const count = await Book.find(query).countDocuments();
+    if (books.length < 1) return next(new HttpError('Book not found.', 404));
     return res.status(200).json({ count, currentPage: page, books });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
