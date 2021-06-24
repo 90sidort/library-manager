@@ -26,7 +26,7 @@ const getUsers = async (req, res, next) => {
     const users = await User.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
-      .populate('borrowed.book', 'title')
+      .populate('borrowed.book', 'title authors published')
       .select('-password');
     const count = await User.find(query).countDocuments();
     if (users.length < 1) return next(new HttpError('User not found.', 404));

@@ -109,10 +109,8 @@ const updateBook = async (req, res, next) => {
       publisher,
       available,
       description,
-      authorsAdd,
-      authorsDelete,
-      genreAdd,
-      genreDelete,
+      authors,
+      genre,
     } = await req.body;
     book.title = title || book.title;
     book.pages = pages || book.pages;
@@ -121,32 +119,8 @@ const updateBook = async (req, res, next) => {
     book.publisher = publisher || book.publisher;
     book.available = available || book.available;
     book.description = description || book.description;
-    if (authorsDelete && authorsDelete.length > 0) {
-      let index;
-      authorsDelete.forEach((author) => {
-        index = book.authors.indexOf(author);
-        book.authors.splice(index, 1);
-      });
-    }
-    if (authorsAdd && authorsAdd.length > 0) {
-      authorsAdd.forEach((author) => {
-        book.authors.push(author);
-      });
-    }
-    if (genreDelete && genreDelete.length > 0) {
-      let index;
-      genreDelete.forEach((genre) => {
-        index = book.genre.indexOf(genre);
-        book.genre.splice(index, 1);
-      });
-    }
-    if (genreAdd && genreAdd.length > 0) {
-      genreAdd.forEach((genre) => {
-        if (book.genre.length < 4) {
-          book.genre.push(genre);
-        }
-      });
-    }
+    book.genre = genre || book.genre;
+    book.authors = authors || book.authors;
     await book.save();
     return res.status(201).json({ book });
   } catch (err) {
