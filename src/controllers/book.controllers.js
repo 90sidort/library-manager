@@ -43,6 +43,7 @@ const getBooks = async (req, res, next) => {
     const books = await Book.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
+      .sort({ updatedAt: 'desc' })
       .populate('authors', 'name surname')
       .populate('genre', 'name')
       .populate('borrower', 'name surname')

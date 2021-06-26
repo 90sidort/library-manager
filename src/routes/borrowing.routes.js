@@ -8,7 +8,7 @@ const requireLogin = require('../middleware/requireLogin');
 
 const bookingRouter = express.Router();
 
-bookingRouter.patch('/:bid/:uid', requireLogin, borrowBook);
+bookingRouter.patch('/borrow', requireLogin, borrowBook);
 
 bookingRouter.patch('/return/:bid/:uid', requireLogin, returnBook);
 

@@ -26,6 +26,7 @@ const getUsers = async (req, res, next) => {
     const users = await User.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
+      .sort({ updatedAt: 'desc' })
       .populate('borrowed.book', 'title authors published')
       .select('-password');
     const count = await User.find(query).countDocuments();

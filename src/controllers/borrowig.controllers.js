@@ -6,10 +6,10 @@ const HttpError = require('../utils/error');
 
 const borrowBook = async (req, res, next) => {
   if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
-  const { bid, uid } = await req.params;
+  const { bid, email } = await req.body;
   try {
     const book = await Book.findById(bid);
-    const user = await User.findById(uid);
+    const user = await User.findOne({ email });
     if (!book) return next(new HttpError('Book not found', 404));
     if (!user) return next(new HttpError('User not found', 404));
     if (!book.available) return next(new HttpError('Book not available', 400));
@@ -28,7 +28,7 @@ const borrowBook = async (req, res, next) => {
     user.borrowed.push({ book: book._id, start: startDate, end: endDate });
     await user.save({ session });
     await session.commitTransaction();
-    return res.status(200).json({ book, user });
+    return res.status(200).json({ book });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
