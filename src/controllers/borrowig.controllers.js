@@ -46,7 +46,7 @@ const getBorrowings = async (req, res, next) => {
 
 const returnBook = async (req, res, next) => {
   if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
-  const { bid, uid } = await req.params;
+  const { bid, uid } = await req.body;
   try {
     const book = await Book.findById(bid);
     const user = await User.findById(uid);
@@ -65,7 +65,7 @@ const returnBook = async (req, res, next) => {
     user.borrowed = newBorrows;
     await user.save({ session });
     await session.commitTransaction();
-    return res.status(200).json({ book, user });
+    return res.status(200).json({ user });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

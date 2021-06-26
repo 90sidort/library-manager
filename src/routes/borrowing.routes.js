@@ -10,7 +10,7 @@ const bookingRouter = express.Router();
 
 bookingRouter.patch('/borrow', requireLogin, borrowBook);
 
-bookingRouter.patch('/return/:bid/:uid', requireLogin, returnBook);
+bookingRouter.patch('/return', requireLogin, returnBook);
 
 bookingRouter.get('/:bookId', requireLogin, getBorrowings);
 
