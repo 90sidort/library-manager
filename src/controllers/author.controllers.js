@@ -17,6 +17,7 @@ const getAuthors = async (req, res, next) => {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate('country', 'name')
+      .sort({ updatedAt: 'desc' })
       .exec();
     const count = await Author.countDocuments();
     return res
