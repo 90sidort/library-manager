@@ -12,17 +12,15 @@ const getAuthors = async (req, res, next) => {
     if (aid) query._id = aid;
     if (name) query.name = { $regex: `${name}`, $options: 'i' };
     if (surname) query.surname = { $regex: `${surname}`, $options: 'i' };
-    if (country) query.country = { _id: country };
+    if (country && country !== 'all') query.country = { _id: country };
     const author = await Author.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate('country', 'name')
       .sort({ updatedAt: 'desc' })
       .exec();
-    const count = await Author.countDocuments();
-    return res
-      .status(200)
-      .json({ total: Math.ceil(count / limit), currentPage: page, author });
+    const count = await Author.find(query).countDocuments();
+    return res.status(200).json({ count, currentPage: page, author });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
