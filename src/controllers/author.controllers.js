@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Author = require('../models/author.model');
+const Book = require('../models/book.model');
 const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
@@ -76,7 +77,8 @@ const deleteAuthor = async (req, res, next) => {
   try {
     const author = await Author.findById(req.params.aid);
     if (!author) return next(new HttpError('Author not found!', 422));
-    if (author.books.length > 0)
+    const books = await Book.find({ authors: author._id });
+    if (books.length > 0)
       return next(new HttpError('Author has books, cannot be deleted!', 403));
     await author.remove();
     return res.status(200).json({ author });
