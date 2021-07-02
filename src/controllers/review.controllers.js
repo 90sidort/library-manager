@@ -62,7 +62,7 @@ const updateReview = async (req, res, next) => {
     return next(new HttpError(errorMessage, 422));
   }
   try {
-    const { title, review, rating } = await req.body;
+    const { title, review, rating, reported } = await req.body;
     const checkReview = await Review.findById(rid);
     if (!checkReview)
       return next(new HttpError('This review does not exist', 404));
@@ -70,6 +70,7 @@ const updateReview = async (req, res, next) => {
       if (req.query.userId !== checkReview.user)
         return next(new HttpError('Unauthorized.', 403));
     }
+    checkReview.reported = typeof reported === 'boolean' ? reported : false;
     checkReview.title = title || checkReview.title;
     checkReview.review = review || checkReview.review;
     checkReview.rating = rating || checkReview.rating;
@@ -87,7 +88,7 @@ const deleteReview = async (req, res, next) => {
     if (!checkReview)
       return next(new HttpError('This review does not exist', 404));
     if (!req.query.admin) {
-      if (req.query.userId !== checkReview.user)
+      if (req.query.userId !== checkReview.user.toString())
         return next(new HttpError('Unauthorized.', 403));
     }
     checkReview.remove();

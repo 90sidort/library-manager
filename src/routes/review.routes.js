@@ -19,6 +19,8 @@ reviewRouter.post('/', requireLogin, validateReview, createReview);
 
 reviewRouter.put('/:rid', requireLogin, validateUpdateReview, updateReview);
 
+reviewRouter.patch('/:rid', requireLogin, updateReview);
+
 reviewRouter.delete('/:rid', requireLogin, deleteReview);
 
 module.exports = reviewRouter;
