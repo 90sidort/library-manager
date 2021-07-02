@@ -13,6 +13,11 @@ const reviewModel = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    reported: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
     rating: {
       type: Number,
       required: true,

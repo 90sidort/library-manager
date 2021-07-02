@@ -37,7 +37,7 @@ const createReview = async (req, res, next) => {
   try {
     const { title, review, rating, user, book } = await req.body;
     const checkReview = await Review.find({ user, book });
-    if (checkReview)
+    if (checkReview && checkReview.length > 0)
       return next(
         new HttpError('You have already created review for this book', 422)
       );

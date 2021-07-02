@@ -10,12 +10,11 @@ const validateReview = [
     .withMessage('Title requires at least 2 chars and max 700 chars.'),
   body('review')
     .trim()
+    .optional()
     .isLength({
-      min: 1,
       max: 2000,
     })
-    .optional()
-    .withMessage('Author surname requires at least 1 char and max 2000 chars.'),
+    .withMessage('Review requires at least 1 char and max 2000 chars.'),
   body('rating')
     .isInt({
       min: 1,
