@@ -70,7 +70,8 @@ const updateReview = async (req, res, next) => {
       if (req.query.userId !== checkReview.user)
         return next(new HttpError('Unauthorized.', 403));
     }
-    checkReview.reported = typeof reported === 'boolean' ? reported : false;
+    checkReview.reported =
+      typeof reported === 'boolean' ? reported : checkReview.reported;
     checkReview.title = title || checkReview.title;
     checkReview.review = review || checkReview.review;
     checkReview.rating = rating || checkReview.rating;
