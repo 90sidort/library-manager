@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Genre = require('../models/genre.model');
+const Book = require('../models/book.model');
 const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
@@ -13,11 +14,10 @@ const getGenres = async (req, res, next) => {
       query = { name: { $regex: `${req.query.name}`, $options: 'i' } };
     const genres = await Genre.find(query)
       .limit(limit * 1)
-      .skip((page - 1) * limit);
-    const count = await Genre.countDocuments();
-    return res
-      .status(200)
-      .json({ total: Math.ceil(count / limit), currentPage: page, genres });
+      .skip((page - 1) * limit)
+      .sort({ updatedAt: 'desc' });
+    const count = await Genre.find(query).countDocuments();
+    return res.status(200).json({ count, currentPage: page, genres });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
@@ -63,6 +63,9 @@ const deleteGenre = async (req, res, next) => {
   try {
     const genre = await Genre.findById(req.params.gid);
     if (!genre) return next(new HttpError('Genre not found!', 422));
+    const books = await Book.find({ genre: req.params.gid });
+    if (books.length > 0)
+      return next(new HttpError('Genre has books, cannot be deleted!', 403));
     await genre.remove();
     return res.status(200).json({ genre });
   } catch (err) {
