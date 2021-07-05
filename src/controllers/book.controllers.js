@@ -49,7 +49,7 @@ const getBooks = async (req, res, next) => {
       .populate('borrower', 'name surname')
       .exec();
     const count = await Book.find(query).countDocuments();
-    if (books.length < 1) return next(new HttpError('Book not found.', 404));
+    // if (books.length < 1) return next(new HttpError('Book not found.', 404));
     return res.status(200).json({ count, currentPage: page, books });
   } catch (err) {
     return next(new HttpError('Server error.', 500));

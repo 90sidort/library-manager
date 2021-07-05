@@ -30,7 +30,7 @@ const getUsers = async (req, res, next) => {
       .populate('borrowed.book', 'title authors published')
       .select('-password');
     const count = await User.find(query).countDocuments();
-    if (users.length < 1) return next(new HttpError('User not found.', 404));
+    // if (users.length < 1) return next(new HttpError('User not found.', 404));
     return res.status(200).json({ count, currentPage: page, users });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
