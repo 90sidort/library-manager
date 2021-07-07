@@ -6,23 +6,23 @@ const createErrorMessage = require('../utils/errorMessage');
 const getReview = async (req, res, next) => {
   const { page = 1, limit = 25 } = req.query;
   try {
-    const searchQuery = {};
-    const { user, book, id } = req.query;
-    if (user) searchQuery.user = { _id: user };
-    else if (book) searchQuery.book = { _id: book };
+    const query = {};
+    const { user, book, id, reported } = req.query;
+    if (reported) query.reported = true;
+    if (user) query.user = { _id: user };
+    else if (book) query.book = { _id: book };
     // eslint-disable-next-line no-underscore-dangle
-    else if (id) searchQuery._id = id;
-    const review = await Review.find(searchQuery)
+    else if (id) query._id = id;
+    const review = await Review.find(query)
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .populate('book', 'title')
       .populate('user', 'name surname')
+      .sort({ updatedAt: 'desc' })
       .exec();
-    const count = await Review.countDocuments();
+    const count = await Review.find(query).countDocuments();
     if (!review) return next(new HttpError('No reviews', 422));
-    return res
-      .status(200)
-      .json({ total: Math.ceil(count / limit), currentPage: page, review });
+    return res.status(200).json({ count, currentPage: page, review });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }

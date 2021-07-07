@@ -13,11 +13,10 @@ const getCountries = async (req, res, next) => {
       query = { name: { $regex: `${req.query.name}`, $options: 'i' } };
     const countries = await Country.find(query)
       .limit(limit * 1)
-      .skip((page - 1) * limit);
-    const count = await Country.countDocuments();
-    return res
-      .status(200)
-      .json({ total: Math.ceil(count / limit), currentPage: page, countries });
+      .skip((page - 1) * limit)
+      .sort({ updatedAt: 'desc' });
+    const count = await Country.find(query).countDocuments();
+    return res.status(200).json({ count, currentPage: page, countries });
   } catch (err) {
     return next(new HttpError('Server error.', 500));
   }
