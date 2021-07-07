@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 const Country = require('../models/country.model');
 const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
+const Author = require('../models/author.model');
 
 const getCountries = async (req, res, next) => {
   if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
@@ -61,7 +62,12 @@ const deleteCountry = async (req, res, next) => {
   if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   try {
     const country = await Country.findById(req.params.cid);
-    if (!country) return next(new HttpError('Genre not found!', 422));
+    if (!country) return next(new HttpError('Country not found!', 422));
+    const authors = await Author.find({ country: req.params.cid });
+    if (authors.length > 0)
+      return next(
+        new HttpError('Country has authors, cannot be deleted!', 403)
+      );
     await country.remove();
     return res.status(200).json({ country });
   } catch (err) {
