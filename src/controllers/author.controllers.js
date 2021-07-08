@@ -5,7 +5,6 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getAuthors = async (req, res, next) => {
-  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { aid, name, surname, country, page = 1, limit = 25 } = req.query;
   const query = {};
   try {

@@ -5,7 +5,6 @@ const HttpError = require('../utils/error');
 const createErrorMessage = require('../utils/errorMessage');
 
 const getGenres = async (req, res, next) => {
-  if (!req.query.admin) return next(new HttpError('Unauthorized.', 403));
   const { page = 1, limit = 25 } = req.query;
   let query = {};
   try {

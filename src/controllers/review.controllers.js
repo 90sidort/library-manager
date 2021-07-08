@@ -67,8 +67,10 @@ const updateReview = async (req, res, next) => {
     if (!checkReview)
       return next(new HttpError('This review does not exist', 404));
     if (!req.query.admin) {
-      if (req.query.userId !== checkReview.user)
-        return next(new HttpError('Unauthorized.', 403));
+      if (req.query.userId !== checkReview.user.toString()) {
+        if (req.method !== 'PATCH')
+          return next(new HttpError('Unauthorized.', 403));
+      }
     }
     checkReview.reported =
       typeof reported === 'boolean' ? reported : checkReview.reported;
